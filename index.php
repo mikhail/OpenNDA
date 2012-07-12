@@ -74,7 +74,7 @@ if ($_POST['action'] == 'Submit Document') {
 
 	$sigb64 = array_pop(explode(',', $_POST['output']));
 
-	$pngfile = tempnam($config['tmpdir'], 'signature';
+	$pngfile = tempnam($config['tmpdir'], 'signature');
 	file_put_contents($pngfile, base64_decode($sigb64), LOCK_EX);
 
 	$mail->AddAddress($config['Email To'], $config['Email Name']);
