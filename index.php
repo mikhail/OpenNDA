@@ -1,14 +1,30 @@
 <?php
+require_once 'class.phpmailer.php'; $mail = new PHPMailer();
+$mail->IsHTML(false); // Send as plain text
+$mail->IsSMTP();
+#
+#	Configuration begins:
+#
+$mail->SMTPAuth   = true;
+$mail->SMTPSecure = "ssl";
+$mail->Host       = "smtp.gmail.com";
+$mail->Port       = 465;
+
+$mail->Username   = "yourcompany-legal@gmail.com";
+$mail->Password   = "supersecret"
+$mail->Subject    = "New NDA Signature";
+
 $config['Company Name'] = 'Your Company';
 $config['Company Logo'] = 'images/logo.gif';
-$config['Gmail username'] = 'yourcompany nda-sender at gmail.com';
-$config['Gmail password'] = 'password for specified email';
 
-$config['Email Subject'] = 'New NDA Signature';
-$config['Email To'] = 'Your email address';
+$config['Email To'] = 'Your email address'; // Who should receive a notification about a new NDA?
 $config['Email Name'] = 'Your name';
 
 $config['tmpdir'] = sys_get_temp_dir(); # IF THE FUNCTION DOES NOT EXIST SET THIS VALUE TO "/tmp";
+
+#
+#	Configuration ends.
+#
 
 ?><!DOCTYPE html>
 <html>
@@ -54,22 +70,6 @@ if ($_POST['action'] == 'Submit Document') {
 	}
 	$text .= "\n".$_SERVER['HTTP_USER_AGENT']."\n".$_SERVER['REMOTE_ADDR'];
 
-	require_once 'class.phpmailer.php';
-
-	$mail = new PHPMailer();
-
-	$mail->IsHTML(false); // send as HTML FIXME: databased and pretty email needed
-
-	$mail->IsSMTP();
-	$mail->SMTPAuth   = true;                  // enable SMTP authentication
-	$mail->SMTPSecure = "ssl";
-	$mail->Host       = "smtp.gmail.com";      
-	$mail->Port       = 465;                   // set the SMTP port
-
-	$mail->Username   = $config['Gmail username'];
-	$mail->Password   = $config['Gmail password'];
-
-	$mail->Subject    = $config['Email Subject'];
 	$mail->Body	  = $text;
 
 	$sigb64 = array_pop(explode(',', $_POST['output']));
@@ -89,7 +89,7 @@ if ($_POST['action'] == 'Submit Document') {
 }
 ?>
 <p class="description">
-This Non-Disclosure Agreement (hereinafter called "Agreement") is entered into to provide for the confidentiality, protection and handling of Proprietary Information related to a product of PhantasyRPG.com (hereinafter called "Developer") for the purpose of examination, editing, play testing, or consideration for publication (hereinafter called "Purpose"), by the party who's legal signature appears at the end of this agreement (hereinafter called "Recipient").</p>
+This Non-Disclosure Agreement (hereinafter called "Agreement") is entered into to provide for the confidentiality, protection and handling of Proprietary Information related to a product of <?php echo $config['Company Name']; ?> (hereinafter called "Developer") for the purpose of examination, editing, play testing, or consideration for publication (hereinafter called "Purpose"), by the party who's legal signature appears at the end of this agreement (hereinafter called "Recipient").</p>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" onsubmit="$(this).find('input[name=\'output\']').val(_sigobj.getSignatureImage())">
 <ol class="romannumeral">
 <li><p><input type="checkbox" id="ndaok0" name="ndaok[]" /><label for="ndaok0">The term "Proprietary Information" means any and all information, in any form, whether of a technical or commercial nature, relating to the Purpose which is disclosed prior or subsequent to the date of this Agreement by the disclosing party to the recipient and identified by the disclosing party at the time of disclosure as being proprietary. Information disclosed in a form other than writing shall be confirmed in writing by the disclosing party as being proprietary within thirty (30) days of disclosure.</label></p></li>
